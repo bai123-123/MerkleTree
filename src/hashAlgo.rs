@@ -33,8 +33,16 @@ impl HashAlgo {
     }
 
     pub fn hash_nodes(&mut self, hash1: &String, hash2: &String) -> String {
-        let bytes1: [u8; 32] = hash1.as_bytes()[0..32].try_into().unwrap();
-        let bytes2: [u8; 32] = hash2.as_bytes()[0..32].try_into().unwrap();
+        let (small,big);
+        if hash1.to_string() < hash2.to_string(){
+            small = hash1;
+            big = hash2;
+        }else {
+            small = hash2;
+            big = hash1;
+        }
+        let bytes1: [u8; 32] = small.as_bytes()[0..32].try_into().unwrap();
+        let bytes2: [u8; 32] = big.as_bytes()[0..32].try_into().unwrap();
         let input1 = Fr::from_be_bytes_mod_order(&bytes1);
         let input2 = Fr::from_be_bytes_mod_order(&bytes2);
         let hash = self.algo.hash(&[input1, input2]).unwrap();

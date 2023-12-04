@@ -7,19 +7,22 @@ use crate::treeNode::MerkleNode;
 
 #[derive(Debug)]
 pub struct Proof {
-    index: usize,
-    value: String,
+    pub index: usize,
+    pub value: String,
     pub siblings: Vec<String>,
-    root_hash: String,
-    empty: bool,
+    pub root_hash: String,
+    pub empty: bool,
 }
+
+
+
 
 impl Proof {
     pub fn new(index: usize, value: String, root_hash: String) -> Self {
         Proof {
             index,
             value,
-            siblings:Vec::new(),
+            siblings: Vec::new(),
             root_hash,
             empty:true,
         }
@@ -48,7 +51,7 @@ impl Proof {
                     return None;
                 }
 
-                self.siblings.push(hash.clone());
+                // self.siblings.push(hash.clone());
 
                 Some(value)
             }
@@ -67,7 +70,7 @@ impl Proof {
                      Proof::getSiblingsByIndex(self, right, idx - left_count, count - left_count);
                     self.siblings.push(left.hash().clone());
                 }
-                self.siblings.push(hash.clone());
+                // self.siblings.push(hash.clone());
 
                None
             }

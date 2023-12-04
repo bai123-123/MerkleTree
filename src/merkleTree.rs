@@ -94,24 +94,20 @@ impl MerkleTree {
     }
 
     pub fn validate(&mut self, proof: Proof) -> bool {
-        let siblings = proof.siblings;
-        let len = (siblings.len() - 1)/2;
-        for i in 0..len{
-            let j = i*2;
-            if i == (len-1){
-                let (str1,str2) = self.calTwo(&siblings[j],&siblings[j+1]);
-                if !MerkleTree::compareTwo(&str1,&str2,&siblings[j+2],&siblings[j+2]){
-                    return false
-                }
-            }else {
-                let (str1,str2) = self.calTwo(&siblings[j],&siblings[j+1]);
-                if !MerkleTree::compareTwo(&str1,&str2,&siblings[j+2],&siblings[j+3]){
-                    return false
-                }
-            }
 
+        let leaf_hash = self.algo.hash_leaf(proof.value);
+
+        let siblings = proof.siblings;
+        let mut final_hash = leaf_hash.clone();
+        for sib in siblings{
+            final_hash = self.algo.hash_nodes(&final_hash, &sib);
         }
-        return true
+
+        if final_hash == proof.root_hash{
+            return true
+        }
+
+        return false;
     }
 
     fn calTwo(&mut self, str1: &String, str2: &String) -> (String, String) {
@@ -120,17 +116,17 @@ impl MerkleTree {
         (res1, res2)
     }
 
-    fn compareTwo(str1: &String, str2: &String,str3: &String, str4: &String) ->bool {
-        if str1 == str3{
-            return true
-        }else if str1 == str4 {
-            return true
-        }else if str2 == str3 {
-            return true
-        }else if str2 == str4 {
-            return true
+    fn compareTwo(str1: &String, str2: &String, str3: &String, str4: &String) -> bool {
+        if str1 == str3 {
+            return true;
+        } else if str1 == str4 {
+            return true;
+        } else if str2 == str3 {
+            return true;
+        } else if str2 == str4 {
+            return true;
         }
-        return false
+        return false;
     }
 
 
